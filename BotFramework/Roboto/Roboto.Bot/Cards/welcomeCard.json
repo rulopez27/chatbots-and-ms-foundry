@@ -37,8 +37,8 @@
   "actions": [
     {
       "type": "Action.Submit",
-      "title": "Schedule an event",
-      "tooltip": "Schedule an event",
+      "title": "New Event",
+      "tooltip": "Schedule a new event",
       "iconUrl": "icon:CalendarAdd"
     },
     {
