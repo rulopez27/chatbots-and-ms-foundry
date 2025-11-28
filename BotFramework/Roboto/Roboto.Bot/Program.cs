@@ -1,4 +1,4 @@
-﻿// Generated with Bot Builder V4 SDK Template for Visual Studio EmptyBot v4.22.0
+﻿// Generated with Bot Builder V4 SDK Template for Visual Studio RobotoBot v4.22.0
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;

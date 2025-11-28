@@ -1,4 +1,4 @@
-﻿// Generated with Bot Builder V4 SDK Template for Visual Studio EmptyBot v4.22.0
+﻿// Generated with Bot Builder V4 SDK Template for Visual Studio RobotoBot v4.22.0
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,7 +35,7 @@ namespace Roboto.Bot
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, EmptyBot>();
+            services.AddTransient<IBot, RobotoBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
