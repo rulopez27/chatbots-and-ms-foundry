@@ -1,0 +1,111 @@
+{
+  "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+  "body": [
+    {
+      "columns": [
+        {
+          "items": [
+            {
+              "color": "Accent",
+              "text": "Add New Event ",
+              "type": "TextBlock",
+              "weight": "Bolder",
+              "wrap": true
+            }
+          ],
+          "type": "Column",
+          "verticalContentAlignment": "Center",
+          "width": "auto"
+        }
+      ],
+      "spacing": "Medium",
+      "type": "ColumnSet",
+      "targetWidth": "atLeast:Standard"
+    },
+    {
+      "items": [
+        {
+          "errorMessage": "Start date is required",
+          "id": "date",
+          "isRequired": true,
+          "label": "Start Date",
+          "type": "Input.Date"
+        },
+        {
+          "errorMessage": "Start time is required",
+          "id": "time",
+          "isRequired": true,
+          "label": "Start Time",
+          "type": "Input.Time"
+        }
+      ],
+      "layouts": [
+        {
+          "columnSpacing": "Small",
+          "itemFit": "Fill",
+          "minItemWidth": "0px",
+          "rowSpacing": "Small",
+          "type": "Layout.Flow"
+        }
+      ],
+      "spacing": "Medium",
+      "type": "Container"
+    },
+    {
+      "choices": [
+        {
+          "title": "1 Hour",
+          "value": "1"
+        },
+        {
+          "title": "2 Hours",
+          "value": "2"
+        },
+        {
+          "title": "3 Hours",
+          "value": "3"
+        }
+      ],
+      "errorMessage": "Duration is required",
+      "id": "duration",
+      "isRequired": true,
+      "label": "Duration",
+      "spacing": "Medium",
+      "type": "Input.ChoiceSet",
+      "value": "1"
+    },
+    {
+      "id": "title",
+      "label": "Meeting or event title",
+      "placeholder": "Enter optional title",
+      "spacing": "Medium",
+      "type": "Input.Text"
+    },
+    {
+      "type": "Input.Toggle",
+      "title": "All Day?"
+    },
+    {
+      "id": "notes",
+      "isMultiline": true,
+      "isVisible": false,
+      "placeholder": "Enter any additional notes or requests",
+      "spacing": "Small",
+      "type": "Input.Text"
+    },
+    {
+      "actions": [
+        {
+          "style": "positive",
+          "title": "Submit",
+          "type": "Action.Submit"
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium",
+      "type": "ActionSet"
+    }
+  ],
+  "type": "AdaptiveCard",
+  "version": "1.5"
+}

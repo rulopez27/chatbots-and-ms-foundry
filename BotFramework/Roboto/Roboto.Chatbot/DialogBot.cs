@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Roboto.Bot
 {
-    public class RobotoBot : ActivityHandler
+    public class DialogBot : ActivityHandler
     {
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
