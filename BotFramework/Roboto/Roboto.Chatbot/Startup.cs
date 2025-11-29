@@ -34,6 +34,12 @@ namespace Roboto.Bot
             // Create the Bot Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
+            // Create the User State used by the bot
+            services.AddSingleton<UserState>();
+
+            // Create the Conversation state used by the bot
+            services.AddSingleton<ConversationState>();
+
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogBot>();
         }
