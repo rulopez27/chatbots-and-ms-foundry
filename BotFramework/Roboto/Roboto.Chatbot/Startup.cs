@@ -8,8 +8,9 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Roboto.Chatbot.Dialogs;
 
-namespace Roboto.Bot
+namespace Roboto.Chatbot
 {
     public class Startup
     {
@@ -34,6 +35,9 @@ namespace Roboto.Bot
             // Create the Bot Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
+            // Create the Memory Storage for development
+            services.AddSingleton<IStorage, MemoryStorage>();
+
             // Create the User State used by the bot
             services.AddSingleton<UserState>();
 
@@ -41,7 +45,7 @@ namespace Roboto.Bot
             services.AddSingleton<ConversationState>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, DialogBot>();
+            services.AddTransient<IBot, DialogBot<MainDialog>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

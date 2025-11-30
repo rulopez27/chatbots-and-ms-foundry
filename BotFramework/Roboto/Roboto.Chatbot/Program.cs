@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Roboto.Bot
+namespace Roboto.Chatbot
 {
     public class Program
     {

@@ -7,11 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 
-namespace Roboto.Bot
+namespace Roboto.Chatbot
 {
-    public class DialogBot : ActivityHandler
+    public class DialogBot<T> : ActivityHandler where T : Dialog
     {
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {

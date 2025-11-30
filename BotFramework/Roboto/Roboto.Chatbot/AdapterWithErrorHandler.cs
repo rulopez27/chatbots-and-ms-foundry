@@ -5,7 +5,7 @@ using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Logging;
 
-namespace Roboto.Bot
+namespace Roboto.Chatbot
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {
