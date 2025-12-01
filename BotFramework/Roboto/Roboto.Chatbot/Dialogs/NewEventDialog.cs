@@ -5,12 +5,14 @@ using Microsoft.Extensions.Logging;
 using Roboto.Chatbot.Cards;
 using System.Threading;
 using System.Threading.Tasks;
+using Roboto.Models;
 
 namespace Roboto.Chatbot.Dialogs
 {
     public class NewEventDialog : ComponentDialog
     {
         ILogger<MainDialog> _logger;
+        CalendarEvent calendarEvent;
         public NewEventDialog(ILogger<MainDialog> logger) : base(nameof(NewEventDialog))
         {
             _logger = logger;
@@ -37,6 +39,21 @@ namespace Roboto.Chatbot.Dialogs
                         Prompt = MessageFactory.Text("Tell me the event details please...")
                     }, cancellationToken);
             }
+        }
+
+        private async Task<DialogTurnResult> AskForEventDate(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("AskForEventDate task fired on NewEventDialog");
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
+            {
+                Prompt = MessageFactory.Text("What is the date of this event?")
+            }, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> AskForStartTime(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("AskForStartTime task fired on NewEventDialog");
+
         }
 
     }
