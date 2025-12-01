@@ -39,23 +39,27 @@
       "type": "Action.Submit",
       "title": "New Event",
       "tooltip": "Schedule a new event",
-      "iconUrl": "icon:CalendarAdd"
+      "iconUrl": "icon:CalendarAdd",
+      "data": "Help me schedule a new Event"
     },
     {
       "type": "Action.Submit",
       "title": "Today's Schedule",
       "tooltip": "Today's Schedule",
-      "iconUrl": "icon:CalendarToday"
+      "iconUrl": "icon:CalendarToday",
+      "data": "What is my schedule today?"
     },
     {
       "type": "Action.Submit",
       "title": "Check for conflicts",
-      "iconUrl": "icon:CalendarError"
+      "iconUrl": "icon:CalendarError",
+      "data": "Are there any conflicts in my schedule?"
     },
     {
       "type": "Action.Submit",
       "title": "List all events",
-      "iconUrl": "icon:CalendarInfo"
+      "iconUrl": "icon:CalendarInfo",
+      "data": "List all my events"
     }
   ]
 }

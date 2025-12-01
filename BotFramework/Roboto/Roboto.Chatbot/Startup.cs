@@ -44,6 +44,10 @@ namespace Roboto.Chatbot
             // Create the Conversation state used by the bot
             services.AddSingleton<ConversationState>();
 
+            //Register dialogs
+            services.AddSingleton<MainDialog>();
+            services.AddSingleton<NewEventDialog>();
+
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogBot<MainDialog>>();
         }

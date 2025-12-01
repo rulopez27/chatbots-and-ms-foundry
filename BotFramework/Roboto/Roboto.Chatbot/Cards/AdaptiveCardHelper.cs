@@ -1,15 +1,25 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 using Microsoft.Bot.Schema;
+using System.Reflection;
+using System;
+using System.Linq;
 
 
 namespace Roboto.Chatbot.Cards
 {
-    public static class AdaptiveCardHelper
+    public class AdaptiveCardHelper : IDisposable
     {
-        public static Attachment GetAdaptiveCard(string resourceFilePath)
+        private Stream _resourceStream;
+
+        public AdaptiveCardHelper(string adaptieCardResourceName)
         {
-            using (StreamReader reader = new StreamReader(resourceFilePath))
+            string resourceName = GetType().Assembly.GetManifestResourceNames().First(name => name.EndsWith(adaptieCardResourceName));
+            _resourceStream = GetType().Assembly.GetManifestResourceStream(resourceName);
+        }
+        public Attachment GetAdaptiveCard()
+        {
+            using (StreamReader reader = new StreamReader(_resourceStream))
             {
                 string adaptiveCard = reader.ReadToEnd();
                 return new Attachment()
@@ -18,6 +28,11 @@ namespace Roboto.Chatbot.Cards
                     Content = JsonConvert.DeserializeObject(adaptiveCard, new JsonSerializerSettings { MaxDepth = null })
                 };
             }
+        }
+
+        public void Dispose()
+        {
+            _resourceStream.Dispose();
         }
     }
 }
