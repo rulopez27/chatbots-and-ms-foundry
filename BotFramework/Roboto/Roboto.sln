@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Chatbot", "Roboto.ChatBot\Roboto.Chatbot.csproj", "{8AB78EB5-62F9-4D35-B246-6FA1DDFD165A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Chatbot", "Roboto.Chatbot\Roboto.Chatbot.csproj", "{8AB78EB5-62F9-4D35-B246-6FA1DDFD165A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Models", "Roboto.Models\Roboto.Models.csproj", "{39EE273C-69D5-453F-AD0E-C661633E5778}"
 EndProject
