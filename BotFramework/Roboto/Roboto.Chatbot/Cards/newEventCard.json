@@ -58,16 +58,36 @@
     {
       "choices": [
         {
+          "title": "30 Minutes",
+          "value": "0.5"
+        },
+        {
           "title": "1 Hour",
           "value": "1"
+        },
+        {
+          "title": "1 Hour and a half",
+          "value": "1.5"
         },
         {
           "title": "2 Hours",
           "value": "2"
         },
         {
+          "title": "2 Hours and a half",
+          "value": "2.5"
+        },
+        {
           "title": "3 Hours",
           "value": "3"
+        },
+        {
+          "title": "3 Hours and a half",
+          "value": "3.5"
+        },
+        {
+          "title": "4 Hours",
+          "value": "4"
         }
       ],
       "errorMessage": "Duration is required",
