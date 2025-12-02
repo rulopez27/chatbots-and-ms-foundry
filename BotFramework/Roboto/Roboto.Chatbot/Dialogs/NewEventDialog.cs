@@ -44,7 +44,7 @@ namespace Roboto.Chatbot.Dialogs
                 return await stepContext.PromptAsync(nameof(TextPrompt),
                     new PromptOptions
                     {
-                        Prompt = MessageFactory.Text("Tell me the event details please...")
+                        Prompt = MessageFactory.Text("Please fill form above to add a new event, or tell me the event details please...")
                     }, cancellationToken);
             }
         }

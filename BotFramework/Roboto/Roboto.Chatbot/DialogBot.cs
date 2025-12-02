@@ -1,15 +1,14 @@
 ﻿// Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.22.0
 
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Roboto.Models;
 
 namespace Roboto.Chatbot
 {
@@ -56,6 +55,34 @@ namespace Roboto.Chatbot
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var dialogState = _conversationState.CreateProperty<DialogState>("DialogState");
+            
+            //Check if the activity has a value payload (from adaptive card submit)
+            if (turnContext.Activity?.Value != null)
+            {
+                //Get the payload as JObject
+                var payload = turnContext.Activity.Value as JObject ?? JObject.FromObject(turnContext.Activity.Value);
+                
+                //Check if it's a new event submission
+                if(payload.Value<string>("submitType") == "newEvent" && payload["date"] != null)
+                {
+                    //Extract event details from payload
+                    string title = payload.Value<string>("title") ?? "No Title";
+                    string date = payload.Value<string>("date") ?? DateTime.Now.ToString("yyyy-MM-dd");
+                    string time = payload.Value<string>("time") ?? "00:00";
+                    double duration = double.TryParse(payload.Value<string>("duration"), out double dur) ? dur : 1.0;
+                    string details = payload.Value<string>("notes") ?? string.Empty;
+                    bool isAllDay = payload.Value<bool?>("allDay") ?? false;
+                    bool blockCalendar = payload.Value<bool?>("blocksCalendar") ?? false;
+
+                    //Create a CalendarEvent object (assuming such a class exists)
+                    CalendarEvent newEvent = new CalendarEvent(title, DateTime.Parse(date), time, duration, isAllDay, blockCalendar, details);
+
+                    //Respond to user
+                    await turnContext.SendActivityAsync(MessageFactory.Text($"New event created: {newEvent}"), cancellationToken);
+                    
+                    return; //Exit after handling the adaptive card submission
+                }
+            }
             await _dialog.RunAsync(turnContext, dialogState, cancellationToken);
         }
     }
