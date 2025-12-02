@@ -6,19 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Cards\menuCard.json" />
-    <Content Remove="Cards\newEventCard.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Cards\resized_robot_250x250.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Cards\menuCard.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Cards\newEventCard.json" />
+    <EmbeddedResource Include="Cards\newEventCard.json">
+    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

@@ -22,6 +22,7 @@ namespace Roboto.Chatbot.Dialogs
             _logger = logger;
             WaterfallStep[] waterfallSteps = new WaterfallStep[]
             {
+                ShowNewEventCard,
                 AskForEventDate,
                 AskForStartTime,
                 AskForEventName,

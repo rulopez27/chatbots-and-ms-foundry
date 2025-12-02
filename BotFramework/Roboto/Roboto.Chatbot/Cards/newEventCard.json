@@ -1,4 +1,6 @@
 {
+  "type": "AdaptiveCard",
+  "version": "1.5",
   "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
   "body": [
     {
@@ -31,8 +33,7 @@
         }
       ],
       "spacing": "Medium",
-      "type": "ColumnSet",
-      "targetWidth": "atLeast:Standard"
+      "type": "ColumnSet"
     },
     {
       "items": [
@@ -49,15 +50,6 @@
           "isRequired": true,
           "label": "Start Time",
           "type": "Input.Time"
-        }
-      ],
-      "layouts": [
-        {
-          "columnSpacing": "Small",
-          "itemFit": "Fill",
-          "minItemWidth": "0px",
-          "rowSpacing": "Small",
-          "type": "Layout.Flow"
         }
       ],
       "spacing": "Medium",
@@ -118,7 +110,5 @@
       "spacing": "Medium",
       "type": "ActionSet"
     }
-  ],
-  "type": "AdaptiveCard",
-  "version": "1.6"
+  ]
 }
