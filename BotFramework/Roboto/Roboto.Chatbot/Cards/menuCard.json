@@ -40,26 +40,38 @@
       "title": "New Event",
       "tooltip": "Schedule a new event",
       "iconUrl": "icon:CalendarAdd",
-      "data": "Help me schedule a new Event"
+      "data":{
+        "intent": "NewEvent",
+        "title": "New Event"
+      }
     },
     {
       "type": "Action.Submit",
       "title": "Today's Schedule",
       "tooltip": "Today's Schedule",
       "iconUrl": "icon:CalendarToday",
-      "data": "What is my schedule today?"
+      "data": {
+        "intent": "TodaysSchedule",
+        "title": "Today's Schedule"
+      }
     },
     {
       "type": "Action.Submit",
       "title": "Check for conflicts",
       "iconUrl": "icon:CalendarError",
-      "data": "Are there any conflicts in my schedule?"
+      "data": {
+        "intent": "CheckForConflicts",
+        "title": "Check for conflicts"
+      }
     },
     {
       "type": "Action.Submit",
       "title": "List all events",
       "iconUrl": "icon:CalendarInfo",
-      "data": "List all my events"
+      "data":{
+        "intent": "ListEvents",
+        "title": "List all events"
+      }
     }
   ]
 }

@@ -38,7 +38,8 @@ namespace Roboto.Chatbot.Dialogs
                 }
                 await stepContext.Context.SendActivityAsync(scheduleMessage, cancellationToken: cancellationToken);
             }
-            return await stepContext.EndDialogAsync(RobotoIntents.Welcome, cancellationToken);
+            await stepContext.ReplaceDialogAsync(nameof(MainDialog),RobotoIntents.Welcome);
+            return EndOfTurn;
         }
     } 
 }
