@@ -7,11 +7,11 @@ using Roboto.Repository;
 
 namespace Roboto.Chatbot.Dialogs
 {
-   public class ScheduleDialog : ComponentDialog
+   public class TodaysScheduleDialog : ComponentDialog
     {
-        ILogger<ScheduleDialog> _logger;
+        ILogger<TodaysScheduleDialog> _logger;
         IRobotoRepository _repository;
-        public ScheduleDialog(ILogger<ScheduleDialog> logger, IRobotoRepository repository) : base (nameof(ScheduleDialog))
+        public TodaysScheduleDialog(ILogger<TodaysScheduleDialog> logger, IRobotoRepository repository) : base (nameof(TodaysScheduleDialog))
         {
             _logger = logger;
             _repository = repository;
@@ -19,6 +19,8 @@ namespace Roboto.Chatbot.Dialogs
             {
                 ShowScheduleAsync
             };
+
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
         }
 
         private async Task<DialogTurnResult> ShowScheduleAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

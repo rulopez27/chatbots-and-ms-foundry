@@ -17,6 +17,7 @@ namespace Roboto.Chatbot.Dialogs
         public MainDialog(ILogger<MainDialog> logger, IServiceProvider serviceProvider) : base(nameof(MainDialog))
         {
             _logger = logger;
+
             WaterfallStep[] waterfallSteps = new WaterfallStep[]
             {
                 ShowMenuAsync,
@@ -25,9 +26,8 @@ namespace Roboto.Chatbot.Dialogs
             };
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
-            AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(serviceProvider.GetRequiredService<NewEventDialog>());
-            AddDialog(serviceProvider.GetRequiredService<ScheduleDialog>());
+            AddDialog(serviceProvider.GetRequiredService<TodaysScheduleDialog>());
         }
 
         private async Task<DialogTurnResult> HandleChoiceAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ namespace Roboto.Chatbot.Dialogs
                 case RobotoIntents.NewEvent:
                     return await stepContext.BeginDialogAsync(nameof(NewEventDialog), null, cancellationToken);
                 case RobotoIntents.TodaysSchedule:
-                    return await stepContext.BeginDialogAsync(nameof(ScheduleDialog), null, cancellationToken);
+                    return await stepContext.BeginDialogAsync(nameof(TodaysScheduleDialog), null, cancellationToken);
                 case RobotoIntents.CheckForConflicts:
                 case RobotoIntents.ListEvents:
                 default:
