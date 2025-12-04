@@ -64,6 +64,23 @@ namespace Roboto.Repository
             
         }
 
+        public async Task<List<CalendarEvent>> GetEventsByDateAsync(DateTime date)
+        {
+            try
+            {
+                DateTime startOfDay = date.Date;
+                DateTime endOfDay = startOfDay.AddDays(1);
+
+                return await _context.CalendarEvents
+                    .Where(e => e.StartDateTime >= startOfDay && e.StartDateTime < endOfDay)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving events by date", ex);
+            }
+        }
+
         public void Dispose()
         {
             _context?.Dispose();

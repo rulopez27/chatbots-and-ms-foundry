@@ -8,5 +8,6 @@ namespace Roboto.Repository
         Task<CalendarEvent> GetEventByIdAsync(Guid id);
         Task AddEventAsync(CalendarEvent calendarEvent);
         Task<List<CalendarEvent>> GetCalendarConflictsAsync(DateTime startDateTime, DateTime endDateTime);
+        Task<List<CalendarEvent>> GetEventsByDateAsync(DateTime date);
     }
 }

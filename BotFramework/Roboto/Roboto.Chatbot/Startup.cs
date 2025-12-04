@@ -56,6 +56,7 @@ namespace Roboto.Chatbot
             //Register dialogs
             services.AddTransient<MainDialog>();
             services.AddTransient<NewEventDialog>();
+            services.AddTransient<ScheduleDialog>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogBot<MainDialog>>();
