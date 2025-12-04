@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Roboto.Chatbot.Dialogs;
+using Roboto.Repository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 
 namespace Roboto.Chatbot
 {
@@ -44,9 +47,15 @@ namespace Roboto.Chatbot
             // Create the Conversation state used by the bot
             services.AddSingleton<ConversationState>();
 
+            //Register DbContext
+            services.AddDbContext<RobotoDbContext>(options => options.UseSqlite("Data Source=roboto.db"));
+            
+            //Register repository implementation
+            services.AddScoped<IRobotoRepository>(provider => provider.GetService<RobotoRepository>());
+            
             //Register dialogs
-            services.AddSingleton<MainDialog>();
-            services.AddSingleton<NewEventDialog>();
+            services.AddTransient<MainDialog>();
+            services.AddTransient<NewEventDialog>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogBot<MainDialog>>();
@@ -69,8 +78,13 @@ namespace Roboto.Chatbot
                 {
                     endpoints.MapControllers();
                 });
-
             // app.UseHttpsRedirection();
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<RobotoDbContext>();
+                db.Database.EnsureCreated();
+            }
         }
     }
 }

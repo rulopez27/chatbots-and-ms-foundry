@@ -76,9 +76,10 @@ namespace Roboto.Chatbot
 
                     //Create a CalendarEvent object (assuming such a class exists)
                     CalendarEvent newEvent = new CalendarEvent(title, DateTime.Parse(date), time, duration, isAllDay, blockCalendar, details);
+                    turnContext.TurnState["newEvent"] = newEvent;
 
-                    //Respond to user
-                    await turnContext.SendActivityAsync(MessageFactory.Text($"New event created: {newEvent}"), cancellationToken);
+                    //Continue with dialog to save the event.
+                    await _dialog.RunAsync(turnContext, dialogState, cancellationToken);
                     
                     return; //Exit after handling the adaptive card submission
                 }

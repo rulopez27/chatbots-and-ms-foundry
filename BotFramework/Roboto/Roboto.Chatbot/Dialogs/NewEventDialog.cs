@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Roboto.Models;
 using System;
+using Roboto.Repository;
 
 namespace Roboto.Chatbot.Dialogs
 {
@@ -14,19 +15,19 @@ namespace Roboto.Chatbot.Dialogs
     {
         ILogger<MainDialog> _logger;
         CalendarEvent calendarEvent;
+        IRobotoRepository _repository;
+        
         public string EventStartDate { get; set; }
         public string EventStartTime { get; set; }
 
-        public NewEventDialog(ILogger<MainDialog> logger) : base(nameof(NewEventDialog))
+        public NewEventDialog(ILogger<MainDialog> logger, IRobotoRepository repository) : base(nameof(NewEventDialog))
         {
             _logger = logger;
+            _repository = repository;
             WaterfallStep[] waterfallSteps = new WaterfallStep[]
             {
                 ShowNewEventCard,
-                AskForEventDate,
-                AskForStartTime,
-                AskForEventName,
-                AskForEventDuration
+                SaveEvent
             };
 
             AddDialog(new WaterfallDialog(nameof(WaterfallStep), waterfallSteps));
@@ -66,60 +67,16 @@ namespace Roboto.Chatbot.Dialogs
             return await stepContext.NextAsync(EventStartDate, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> AskForStartTime(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+      private async Task<DialogTurnResult> SaveEvent(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("AskForStartTime task fired on NewEventDialog");
-            calendarEvent = (CalendarEvent)stepContext.Options;
-            
-            //Get result from previous step
-            EventStartDate = (string)stepContext.Result;
-            if (string.IsNullOrEmpty(EventStartTime))
-            {
-                var promptMessage = MessageFactory.Text("At what time does the event start?", inputHint: InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
-                {
-                    Prompt = promptMessage
-                }, cancellationToken);
-            }
-
-            return await stepContext.NextAsync(EventStartTime, cancellationToken);
-
-        }
-        private async Task<DialogTurnResult> AskForEventName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("AskForEventName task fired on NewEventDialog");
+            _logger.LogInformation("SaveEvent task fired on NewEventDialog");
             calendarEvent = (CalendarEvent)stepContext.Options;
 
-            //Get result from previous step
-            EventStartTime = (string)stepContext.Result;
+            // Persist using repository (repository handles DbContext and SaveChanges)
+            await _repository.AddEventAsync(calendarEvent);
 
-            calendarEvent.StartDateTime = DateTime.Parse($"{EventStartDate} {EventStartTime}");
-            if(string.IsNullOrEmpty(calendarEvent.Title))
-            {
-                var promptMessage = MessageFactory.Text("What is the name of the event?", inputHint: InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
-                {
-                    Prompt = promptMessage
-                }, cancellationToken);
-            }
-
-            return await stepContext.NextAsync(calendarEvent.Title, cancellationToken);
-
-        }
-
-        private async Task<DialogTurnResult> AskForEventDuration(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("AskForEventDuration task fired on NewEventDialog");
-            calendarEvent = (CalendarEvent)stepContext.Options;
-
-            //Get result from previous step
-            calendarEvent.Title = (string)stepContext.Result;
-
-            var promptMessage = MessageFactory.Text("How long will the event last (in hours)?", inputHint: InputHints.ExpectingInput);
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
-            {
-                Prompt = promptMessage
-            }, cancellationToken);
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Event saved: {calendarEvent.Title} at {calendarEvent.StartDateTime}"), cancellationToken);
+            return await stepContext.EndDialogAsync(calendarEvent, cancellationToken);
         }
 
     }
