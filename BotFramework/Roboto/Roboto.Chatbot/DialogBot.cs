@@ -47,44 +47,22 @@ namespace Roboto.Chatbot
         {
             await base.OnTurnAsync(turnContext, cancellationToken);
 
+            // Run dialog
+            var dialogSet = new DialogSet(_conversationState.CreateProperty<DialogState>("DialogState"));
+            dialogSet.Add(_dialog);
+            var dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
+            if(dialogContext.ActiveDialog == null)
+            {
+                await dialogContext.BeginDialogAsync(_dialog.Id, null, cancellationToken);
+            }
+            else
+            {
+                await dialogContext.ContinueDialogAsync(cancellationToken);
+            }
+
             //Save any state change
             await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
             await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
-        }
-
-        protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
-        {
-            var dialogState = _conversationState.CreateProperty<DialogState>("DialogState");
-            
-            //Check if the activity has a value payload (from adaptive card submit)
-            if (turnContext.Activity?.Value != null)
-            {
-                //Get the payload as JObject
-                var payload = turnContext.Activity.Value as JObject ?? JObject.FromObject(turnContext.Activity.Value);
-                
-                //Check if it's a new event submission
-                if(payload.Value<string>("submitType") == "newEvent" && payload["date"] != null)
-                {
-                    //Extract event details from payload
-                    string title = payload.Value<string>("title") ?? "No Title";
-                    string date = payload.Value<string>("date") ?? DateTime.Now.ToString("yyyy-MM-dd");
-                    string time = payload.Value<string>("time") ?? "00:00";
-                    double duration = double.TryParse(payload.Value<string>("duration"), out double dur) ? dur : 1.0;
-                    string details = payload.Value<string>("notes") ?? string.Empty;
-                    bool isAllDay = payload.Value<bool?>("allDay") ?? false;
-                    bool blockCalendar = payload.Value<bool?>("blocksCalendar") ?? false;
-
-                    //Create a CalendarEvent object (assuming such a class exists)
-                    CalendarEvent newEvent = new CalendarEvent(title, DateTime.Parse(date), time, duration, isAllDay, blockCalendar, details);
-                    turnContext.TurnState["newEvent"] = newEvent;
-
-                    //Continue with dialog to save the event.
-                    await _dialog.RunAsync(turnContext, dialogState, cancellationToken);
-                    
-                    return; //Exit after handling the adaptive card submission
-                }
-            }
-            await _dialog.RunAsync(turnContext, dialogState, cancellationToken);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Roboto.Chatbot
             services.AddDbContext<RobotoDbContext>(options => options.UseSqlite("Data Source=roboto.db"));
             
             //Register repository implementation
-            services.AddScoped<IRobotoRepository>(provider => provider.GetService<RobotoRepository>());
+            services.AddScoped<IRobotoRepository, RobotoRepository>();
             
             //Register dialogs
             services.AddTransient<MainDialog>();
