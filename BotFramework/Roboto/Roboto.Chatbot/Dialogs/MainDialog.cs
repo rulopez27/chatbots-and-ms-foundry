@@ -41,8 +41,12 @@ namespace Roboto.Chatbot.Dialogs
                     return await stepContext.BeginDialogAsync(nameof(NewEventDialog), null, cancellationToken);
                 case RobotoIntents.ListEvents:
                     return await stepContext.BeginDialogAsync(nameof(NewEventDialog), null, cancellationToken);
+                case RobotoIntents.Welcome:
+                    return await stepContext.ReplaceDialogAsync(nameof(MainDialog), null, cancellationToken);
+                default:
+                    return await HandleBadRequestAsync(stepContext, cancellationToken);
             }
-            return await HandleBadRequestAsync(stepContext, cancellationToken);
+
         }
 
         private async Task<DialogTurnResult> HandleBadRequestAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

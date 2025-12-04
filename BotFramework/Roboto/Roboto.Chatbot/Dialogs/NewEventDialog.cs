@@ -77,7 +77,7 @@ namespace Roboto.Chatbot.Dialogs
                         await stepContext.Context.SendActivityAsync(MessageFactory.Text("There was an error creating the event. Please try again."), cancellationToken);
                         return await stepContext.EndDialogAsync(null, cancellationToken);
                     }
-                    return await stepContext.EndDialogAsync(newEvent, cancellationToken);
+                    return await stepContext.EndDialogAsync(RobotoIntents.Welcome, cancellationToken);
                 }
             }
             // No payload or unexpected payload — end dialog (or optionally continue dialog to ask for missing info)

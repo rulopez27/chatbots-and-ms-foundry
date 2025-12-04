@@ -5,6 +5,7 @@
         NewEvent,
         TodaysSchedule,
         CheckForConflicts,
-        ListEvents
+        ListEvents,
+        Welcome
     }
 }
