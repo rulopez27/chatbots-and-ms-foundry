@@ -4,7 +4,7 @@ namespace Roboto.Models
 {
     public class CalendarEvent
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public DateTime StartDateTime { get; set; }
         public double Duration { get; set; }
@@ -12,19 +12,19 @@ namespace Roboto.Models
         public string Details { get; set; }
         public DateTime EndDateTime { get; set; }
         public bool BlockCalendar { get; set; }
-        public User User { get; set; }
-        public Guid UserId { get; set; }
+        public virtual User? User { get; set; }
+        public int UserId { get; set; }
 
         public CalendarEvent()
         {
-            Id = Guid.NewGuid();
             Title = string.Empty;
             Details = string.Empty;
+            
         }
 
-        public CalendarEvent(string title, DateTime startDateTime, double duration, bool isAllDay, bool blockCalendar, string details)
+        public CalendarEvent(int userId, string title, DateTime startDateTime, double duration, bool isAllDay, bool blockCalendar, string details)
         {
-            Id = Guid.NewGuid();
+            UserId = userId;
             Title = title;
             StartDateTime = startDateTime;
             Duration = duration;
@@ -34,9 +34,9 @@ namespace Roboto.Models
             CalculateEndTime();
         }
 
-        public CalendarEvent(string title, DateTime startDate, string startTime, double duration, bool isAllDay, bool blockCalendar, string details)
+        public CalendarEvent(int userId, string title, DateTime startDate, string startTime, double duration, bool isAllDay, bool blockCalendar, string details)
         {
-            Id = Guid.NewGuid();
+            UserId = userId;
             Title = title;
             DateTime.TryParse(startTime, out DateTime startTimeDT);
             StartDateTime = startDate
