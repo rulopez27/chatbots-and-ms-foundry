@@ -15,6 +15,18 @@ public class RobotoDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.PasswordHash).IsRequired();
+            entity.Property(e => e.Salt).IsRequired();
+            entity.HasMany(e => e.CalendarEvents)
+                  .WithOne(e => e.User)
+                  .HasForeignKey(e => e.UserId);
+        });
+
         modelBuilder.Entity<CalendarEvent>(entity =>
         {
             entity.HasKey(e => e.Id);

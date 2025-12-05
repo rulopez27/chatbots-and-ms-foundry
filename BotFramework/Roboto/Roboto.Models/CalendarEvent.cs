@@ -12,6 +12,8 @@ namespace Roboto.Models
         public string Details { get; set; }
         public DateTime EndDateTime { get; set; }
         public bool BlockCalendar { get; set; }
+        public User User { get; set; }
+        public Guid UserId { get; set; }
 
         public CalendarEvent()
         {
