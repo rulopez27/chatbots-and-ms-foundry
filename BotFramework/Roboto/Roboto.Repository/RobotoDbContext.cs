@@ -10,6 +10,7 @@ public class RobotoDbContext : DbContext
     }
 
     public virtual DbSet<CalendarEvent> CalendarEvents { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,10 +19,10 @@ public class RobotoDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.PasswordHash).IsRequired();
-            entity.Property(e => e.Salt).IsRequired();
+            entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.PasswordHash).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Salt).HasMaxLength(255).IsRequired();
             entity.HasMany(e => e.CalendarEvents)
                   .WithOne(e => e.User)
                   .HasForeignKey(e => e.UserId);

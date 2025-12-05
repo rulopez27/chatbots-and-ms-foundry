@@ -24,7 +24,7 @@ namespace Roboto.Repository
             }
         }
 
-        public async Task<CalendarEvent> GetEventByIdAsync(Guid id)
+        public async Task<CalendarEvent> GetEventByIdAsync(int id)
         {
             try
             {
