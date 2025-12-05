@@ -1,0 +1,6 @@
+@Roboto.Service_HostAddress = http://localhost:5249
+
+GET {{Roboto.Service_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

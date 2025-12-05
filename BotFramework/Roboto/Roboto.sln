@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Models", "Roboto.Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Repository", "Roboto.Repository\Roboto.Repository.csproj", "{36A7C423-6955-4334-8BBC-4AAEF50D73CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Service", "Roboto.Service\Roboto.Service.csproj", "{1773C9BD-5999-414E-8B17-773FACE95567}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{36A7C423-6955-4334-8BBC-4AAEF50D73CD}.Release|x64.Build.0 = Release|Any CPU
 		{36A7C423-6955-4334-8BBC-4AAEF50D73CD}.Release|x86.ActiveCfg = Release|Any CPU
 		{36A7C423-6955-4334-8BBC-4AAEF50D73CD}.Release|x86.Build.0 = Release|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Debug|x64.Build.0 = Debug|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Debug|x86.Build.0 = Debug|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Release|x64.ActiveCfg = Release|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Release|x64.Build.0 = Release|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Release|x86.ActiveCfg = Release|Any CPU
+		{1773C9BD-5999-414E-8B17-773FACE95567}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
