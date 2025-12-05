@@ -1,41 +1,113 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Roboto.Repository;
+using Roboto.Service.Auth;
+using Roboto.Service.Dto;
+using Roboto.Models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Configuration
+var configuration = builder.Configuration;
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Add DbContext (Pomelo MySQL)
+builder.Services.AddDbContext<RobotoDbContext>(options =>
+    options.UseMySql(configuration.GetConnectionString("MySql"),
+        new MySqlServerVersion(new Version(8, 0, 44))));
+
+// Services
+builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+// JWT Auth
+var jwtKey = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key missing");
+var issuer = configuration["Jwt:Issuer"];
+var audience = configuration["Jwt:Audience"];
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = !string.IsNullOrEmpty(issuer),
+            ValidIssuer = issuer,
+            ValidateAudience = !string.IsNullOrEmpty(audience),
+            ValidAudience = audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ValidateLifetime = true
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Enable Swagger only in development (recommended)
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
-var summaries = new[]
+app.MapPost("/api/auth/register", async (RegisterDto dto, RobotoDbContext db, IPasswordHasher hasher) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    // basic validation
+    if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password) || string.IsNullOrWhiteSpace(dto.Email))
+        return Results.BadRequest("username, email and password are required");
 
-app.MapGet("/weatherforecast", () =>
+    var exists = await db.Users.AnyAsync(u => u.Username == dto.Username || u.Email == dto.Email);
+    if (exists) return Results.Conflict("username or email already in use");
+
+    var (hash, salt) = hasher.HashPassword(dto.Password);
+
+    var user = new User
+    {
+        Username = dto.Username,
+        Email = dto.Email,
+        PasswordHash = hash,
+        Salt = salt,
+        CreatedAt = DateTime.UtcNow
+    };
+
+    db.Users.Add(user);
+    await db.SaveChangesAsync();
+
+    return Results.Created($"/api/users/{user.Id}", new { user.Id, user.Username, user.Email });
+});
+
+app.MapPost("/api/auth/login", async (LoginDto dto, RobotoDbContext db, IPasswordHasher hasher, IJwtService jwt) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var user = await db.Users
+        .FirstOrDefaultAsync(u => u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
+
+    if (user == null) return Results.Unauthorized();
+
+    if (!hasher.VerifyPassword(dto.Password, user.PasswordHash, user.Salt))
+        return Results.Unauthorized();
+
+    var token = jwt.GenerateToken(user);
+
+    return Results.Ok(new { token });
+});
+
+app.MapGet("/api/protected", [Microsoft.AspNetCore.Authorization.Authorize] () =>
+{
+    return Results.Ok(new { message = "You are authenticated." });
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
