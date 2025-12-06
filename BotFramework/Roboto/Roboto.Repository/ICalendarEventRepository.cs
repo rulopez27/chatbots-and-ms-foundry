@@ -2,7 +2,7 @@ using Roboto.Models;
 
 namespace Roboto.Repository
 {
-    public interface IRobotoRepository
+    public interface ICalendarEventRepository
     {
         Task<List<CalendarEvent>> GetAllEventsAsync();
         Task<CalendarEvent> GetEventByIdAsync(int id);

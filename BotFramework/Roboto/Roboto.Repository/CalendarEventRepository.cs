@@ -3,11 +3,11 @@ using Roboto.Models;
 
 namespace Roboto.Repository
 {
-    public class RobotoRepository : IRobotoRepository, IDisposable
+    public class CalendarEventRepository : ICalendarEventRepository, IDisposable
     {
-        private readonly RobotoDbContext _context;
+        private readonly RobotoCalendarSchedulerDbContext _context;
 
-        public RobotoRepository(RobotoDbContext context)
+        public CalendarEventRepository(RobotoCalendarSchedulerDbContext context)
         {
             _context = context;
         }

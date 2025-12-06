@@ -3,9 +3,9 @@ using Roboto.Models;
 
 namespace Roboto.Repository;
 
-public class RobotoDbContext : DbContext
+public class RobotoCalendarSchedulerDbContext : DbContext
 {
-    public RobotoDbContext(DbContextOptions<RobotoDbContext> options) : base(options)
+    public RobotoCalendarSchedulerDbContext(DbContextOptions<RobotoCalendarSchedulerDbContext> options) : base(options)
     {
     }
 
