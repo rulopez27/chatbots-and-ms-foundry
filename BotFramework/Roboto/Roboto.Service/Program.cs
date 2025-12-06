@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using MySql.EntityFrameworkCore.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Roboto.Repository;
 using Roboto.Service.Auth;
 using Roboto.Service.Dto;
 using Roboto.Models;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,7 @@ builder.Services.AddSwaggerGen();
 
 // Add DbContext (Pomelo MySQL)
 builder.Services.AddDbContext<RobotoDbContext>(options =>
-    options.UseMySql(configuration.GetConnectionString("MySql"),
-        new MySqlServerVersion(new Version(8, 0, 44))));
+    options.UseMySQL(configuration.GetConnectionString("MySql")?? throw new InvalidOperationException("Connection string 'MySql' not found.")));
 
 // Services
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
