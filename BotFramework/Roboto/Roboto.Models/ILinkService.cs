@@ -2,6 +2,6 @@ namespace Roboto.Models.Dto
 {
     public interface ILinkService
     {
-        Link Generate(string endpointName, string action, object? routeValues, string rel, string method);
+        Link Generate(string endpointName, string controller, object? routeValues, string rel, string method);
     }
 }

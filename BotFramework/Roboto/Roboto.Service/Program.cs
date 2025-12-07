@@ -6,7 +6,8 @@ using Roboto.Repository;
 using Roboto.Service.Auth;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using Roboto.Models.Dto;
+using Roboto.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,8 @@ builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 // Services
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ILinkService, LinkService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // JWT Auth
 var jwtKey = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key missing");
