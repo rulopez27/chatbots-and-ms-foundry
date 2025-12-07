@@ -50,5 +50,17 @@ namespace Roboto.Repository
                 throw new Exception($"Error retrieving user with username {usernameOrEmail}", ex);
             }
         }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            try
+            {
+                return await _context.Users.FirstOrDefaultAsync(u => u.Id == id );
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error retrieving user with id {id}", ex);
+            }
+        }
     }
 }

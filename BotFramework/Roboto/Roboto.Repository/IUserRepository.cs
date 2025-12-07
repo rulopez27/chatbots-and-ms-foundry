@@ -7,5 +7,6 @@ namespace Roboto.Repository
         Task<bool> UsernameOrEmailExistsAsync(string username, string email);
         Task AddUserAsync(User user);
         Task<User?> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
+        Task<User?> GetUserByIdAsync(int id);
     }
 }

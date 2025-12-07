@@ -7,6 +7,8 @@ namespace Roboto.Service.Controllers
     using Roboto.Service.Auth;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
+    using AutoMapper;
+    using Roboto.Service.Services;
 
     [ApiController]
     public class UsersController : ControllerBase
@@ -14,12 +16,26 @@ namespace Roboto.Service.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
+        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILinkService _linkService;
+        private readonly LinkGenerator _linkGenerator;
 
-        public UsersController(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtService jwtService)
+        public UsersController(IUserRepository userRepository, 
+            IPasswordHasher passwordHasher, 
+            IJwtService jwtService, 
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            ILinkService linkService,
+            LinkGenerator linkGenerator)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
+            _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+            _linkService = linkService;
+            _linkGenerator = linkGenerator;
         }
 
         [AllowAnonymous]
@@ -65,6 +81,17 @@ namespace Roboto.Service.Controllers
             var token = _jwtService.GenerateToken(user);
 
             return Ok(new { token });
+        }
+
+        [HttpGet("api/users/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+            UserDto userDto = new UserDto();
+            _mapper.Map(user, userDto);
+            userDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
+            return Ok(userDto);
         }
     }
 }

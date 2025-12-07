@@ -40,6 +40,10 @@ namespace Roboto.Models.Profiles
                     dest => dest.ModifiedAt,
                     opt => opt.MapFrom(src => src.ModifiedAt)
                 )
+                .ForMember(
+                    dest => dest.CalendarEvents,
+                    opt => opt.MapFrom(src => src.CalendarEvents)
+                )
                 .ReverseMap();
         }
         
