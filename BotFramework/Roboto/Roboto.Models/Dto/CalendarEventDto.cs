@@ -1,6 +1,6 @@
 namespace Roboto.Models.Dto
 {
-    public class CalendarEventDto
+    public class CalendarEventDto : DtoBase
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
