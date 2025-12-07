@@ -8,6 +8,7 @@ namespace Roboto.Models.Dto
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
         public List<CalendarEvent> CalendarEvents { get; set; } = new List<CalendarEvent>();
 
     }

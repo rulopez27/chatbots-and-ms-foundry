@@ -47,10 +47,12 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
 // Add DbContext - MySQL
 builder.Services.AddDbContext<RobotoCalendarSchedulerDbContext>(options =>
     options.UseMySQL(configuration.GetConnectionString("MySql")?? throw new InvalidOperationException("Connection string 'MySql' not found.")));
 
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 
@@ -63,6 +65,9 @@ builder.Services.AddAutoMapper(config =>
 {
     config.AddMaps(typeof(CalendarEvent).Assembly);
     config.AddMaps(typeof(User).Assembly);
+    config.AddMaps(typeof(CalendarEventDto).Assembly);
+    config.AddMaps(typeof(UserDto).Assembly);
+    config.AddMaps(typeof(CalendarEventCreateDto).Assembly);
 });
 
 // JWT Auth

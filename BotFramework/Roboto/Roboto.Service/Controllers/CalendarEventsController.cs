@@ -4,7 +4,6 @@ using Roboto.Models;
 using Roboto.Repository;
 using Roboto.Models.Dto;
 using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Roboto.Service.Services;
 
 namespace Roboto.Service.Controllers
@@ -42,8 +41,8 @@ namespace Roboto.Service.Controllers
                 {
                     return BadRequest("Event title, start date and time or duration are invalid.");
                 }
-                
-                CalendarEvent calendarEvent = _mapper.Map<CalendarEvent>(dto);
+                CalendarEvent calendarEvent = new CalendarEvent();
+                _mapper.Map(dto, calendarEvent);
                 await _repository.AddEventAsync(calendarEvent);
                 CalendarEventDto returnDto = _mapper.Map<CalendarEventDto>(calendarEvent);
                 returnDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
@@ -67,7 +66,8 @@ namespace Roboto.Service.Controllers
                     return NotFound();
                 }
 
-                CalendarEventDto calendarEventDto = _mapper.Map<CalendarEventDto>(calendarEvent);
+                CalendarEventDto calendarEventDto = new CalendarEventDto();
+                _mapper.Map(calendarEvent, calendarEventDto);
                 calendarEventDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
                 return Ok(calendarEventDto);   
             }
@@ -77,6 +77,51 @@ namespace Roboto.Service.Controllers
                 return StatusCode(500, errorMessage);
             }
             
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] CalendarEventDto dto)
+        {
+            try
+            {
+                CalendarEvent existingEvent = await _repository.GetEventByIdAsync(dto.Id);
+                if(existingEvent == null)
+                {
+                    return NotFound();
+                }
+
+                _mapper.Map(dto, existingEvent);
+                await _repository.UpdateEventAsync(existingEvent);
+                CalendarEventDto returnDto = _mapper.Map<CalendarEventDto>(existingEvent);
+                returnDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
+                return Ok(returnDto);
+            }
+            catch(Exception ex)
+            {
+                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
+                return StatusCode(500, errorMessage);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                CalendarEvent existingEvent = await _repository.GetEventByIdAsync(id);
+                if(existingEvent == null)
+                {
+                    return NotFound();
+                }
+
+                await _repository.DeleteEventAsync(id);
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
+                return StatusCode(500, errorMessage);
+            }
         }
     }
 }

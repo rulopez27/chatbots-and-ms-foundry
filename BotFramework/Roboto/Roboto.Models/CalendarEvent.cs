@@ -7,17 +7,20 @@
         public DateTime StartDateTime { get; set; }
         public double Duration { get; set; }
         public bool IsAllDay { get; set; }
-        public string Details { get; set; }
-        public DateTime EndDateTime { get; set; }
+        public string? Details { get; set; }
+        public DateTime EndDateTime => Duration > 0 ? StartDateTime.AddHours(Duration) : StartDateTime.AddHours(23).AddMinutes(59);
         public bool BlockCalendar { get; set; }
         public virtual User? User { get; set; }
         public int UserId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
 
         public CalendarEvent()
         {
             Title = string.Empty;
             Details = string.Empty;
-            
+            CreatedAt = DateTime.Now;
+            ModifiedAt = DateTime.MinValue;
         }
 
         public CalendarEvent(int userId, string title, DateTime startDateTime, double duration, bool isAllDay, bool blockCalendar, string details)
@@ -29,7 +32,8 @@
             IsAllDay = isAllDay;
             BlockCalendar = blockCalendar;
             Details = details;
-            CalculateEndTime();
+            CreatedAt = DateTime.Now;
+            ModifiedAt = DateTime.MinValue;
         }
 
         public CalendarEvent(int userId, string title, DateTime startDate, string startTime, double duration, bool isAllDay, bool blockCalendar, string details)
@@ -44,15 +48,6 @@
             IsAllDay = isAllDay;
             BlockCalendar = blockCalendar;
             Details = details;
-            CalculateEndTime();
-        }
-
-        private void CalculateEndTime()
-        {
-            EndDateTime = IsAllDay ? StartDateTime
-                .Date
-                .AddHours(23)
-                .AddMinutes(59) : StartDateTime.AddHours(Duration);
         }
 
         public override string ToString()

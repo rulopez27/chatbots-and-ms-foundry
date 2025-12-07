@@ -13,11 +13,13 @@ namespace Roboto.Models
         public string PasswordHash { get; set; } = string.Empty;
         public string Salt { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
         public virtual ICollection<CalendarEvent> CalendarEvents { get; set; }
 
         public User()
         {
             CreatedAt = DateTime.MinValue;
+            ModifiedAt = DateTime.MinValue;
             CalendarEvents = new List<CalendarEvent>();
         }
         public User(string username, string email, string passwordHash, string salt)
@@ -27,6 +29,7 @@ namespace Roboto.Models
             PasswordHash = passwordHash;
             Salt = salt;
             CreatedAt = DateTime.MinValue;
+            ModifiedAt = DateTime.MinValue;
             CalendarEvents = new List<CalendarEvent>();
         }
     }

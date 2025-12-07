@@ -43,7 +43,16 @@ namespace Roboto.Models.Profiles
                 .ForMember(
                     dest => dest.UserId,
                     opt => opt.MapFrom(src => src.UserId)
-                );
+                )
+                .ForMember(
+                    dest => dest.CreatedAt,
+                    opt => opt.MapFrom(src => src.CreatedAt)
+                )
+                .ForMember(
+                    dest => dest.ModifiedAt,
+                    opt => opt.MapFrom(src => src.ModifiedAt)
+                )
+                .ReverseMap();
         }
     }
 }

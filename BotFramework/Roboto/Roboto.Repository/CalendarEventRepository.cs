@@ -12,11 +12,13 @@ namespace Roboto.Repository
             _context = context;
         }
 
-        public async Task<List<CalendarEvent>> GetAllEventsAsync()
+        public async Task<List<CalendarEvent>> GetAllEventsAsync(int userId)
         {
             try
             {
-                return await _context.CalendarEvents.ToListAsync();
+                return await _context.CalendarEvents
+                .Where(calendarEvent => calendarEvent.UserId == userId)
+                .ToListAsync();
             }
             catch(Exception ex)
             {
@@ -49,12 +51,12 @@ namespace Roboto.Repository
             }
         }
 
-        public async Task<List<CalendarEvent>> GetCalendarConflictsAsync(DateTime startDateTime, DateTime endDateTime)
+        public async Task<List<CalendarEvent>> GetCalendarConflictsAsync(int userId, DateTime startDateTime, DateTime endDateTime)
         {
             try
             {
                 return await _context.CalendarEvents
-                .Where(e => e.StartDateTime < endDateTime && e.EndDateTime > startDateTime)
+                .Where(e => e.UserId == userId && e.StartDateTime < endDateTime && e.EndDateTime > startDateTime)
                 .ToListAsync();
             }
             catch(Exception ex)
@@ -64,7 +66,7 @@ namespace Roboto.Repository
             
         }
 
-        public async Task<List<CalendarEvent>> GetEventsByDateAsync(DateTime date)
+        public async Task<List<CalendarEvent>> GetEventsByDateAsync(int userId,DateTime date)
         {
             try
             {
@@ -72,12 +74,46 @@ namespace Roboto.Repository
                 DateTime endOfDay = startOfDay.AddDays(1);
 
                 return await _context.CalendarEvents
-                    .Where(e => e.StartDateTime >= startOfDay && e.StartDateTime < endOfDay)
+                    .Where(e => e.UserId == userId && e.StartDateTime >= startOfDay && e.StartDateTime < endOfDay)
                     .ToListAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Error retrieving events by date", ex);
+            }
+        }
+
+        public Task UpdateEventAsync(CalendarEvent calendarEvent)
+        {
+            try
+            {
+                _context.CalendarEvents.Update(calendarEvent);
+                return _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating calendar event", ex);
+            }
+        }
+
+        public Task DeleteEventAsync(int id)
+        {
+            try
+            {
+                var calendarEvent = _context.CalendarEvents.Find(id);
+                if (calendarEvent != null)
+                {
+                    _context.CalendarEvents.Remove(calendarEvent);
+                    return _context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new Exception($"Calendar event with ID {id} not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error deleting calendar event", ex);
             }
         }
 
