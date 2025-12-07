@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Roboto.Repository;
 using Roboto.Service.Auth;
-using Roboto.Service.Dto;
-using Roboto.Models;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,11 +13,42 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Add DbContext (Pomelo MySQL)
-builder.Services.AddDbContext<RobotoDbContext>(options =>
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Roboto Service API", 
+        Version = "v1"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Description = "JWT Authorization header using the Bearer scheme.",
+        In = ParameterLocation.Header,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+// Add DbContext - MySQL
+builder.Services.AddDbContext<RobotoCalendarSchedulerDbContext>(options =>
     options.UseMySQL(configuration.GetConnectionString("MySql")?? throw new InvalidOperationException("Connection string 'MySql' not found.")));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
@@ -63,51 +92,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapPost("/api/auth/register", async (RegisterDto dto, RobotoDbContext db, IPasswordHasher hasher) =>
-{
-    // basic validation
-    if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password) || string.IsNullOrWhiteSpace(dto.Email))
-        return Results.BadRequest("username, email and password are required");
-
-    var exists = await db.Users.AnyAsync(u => u.Username == dto.Username || u.Email == dto.Email);
-    if (exists) return Results.Conflict("username or email already in use");
-
-    var (hash, salt) = hasher.HashPassword(dto.Password);
-
-    var user = new User
-    {
-        Username = dto.Username,
-        Email = dto.Email,
-        PasswordHash = hash,
-        Salt = salt,
-        CreatedAt = DateTime.UtcNow
-    };
-
-    db.Users.Add(user);
-    await db.SaveChangesAsync();
-
-    return Results.Created($"/api/users/{user.Id}", new { user.Id, user.Username, user.Email });
-});
-
-app.MapPost("/api/auth/login", async (LoginDto dto, RobotoDbContext db, IPasswordHasher hasher, IJwtService jwt) =>
-{
-    var user = await db.Users
-        .FirstOrDefaultAsync(u => u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
-
-    if (user == null) return Results.Unauthorized();
-
-    if (!hasher.VerifyPassword(dto.Password, user.PasswordHash, user.Salt))
-        return Results.Unauthorized();
-
-    var token = jwt.GenerateToken(user);
-
-    return Results.Ok(new { token });
-});
-
-app.MapGet("/api/protected", [Microsoft.AspNetCore.Authorization.Authorize] () =>
-{
-    return Results.Ok(new { message = "You are authenticated." });
-});
-
+app.MapControllers();
 app.Run();

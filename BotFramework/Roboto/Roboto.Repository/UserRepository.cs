@@ -12,15 +12,15 @@ namespace Roboto.Repository
             _context = context;
         }
 
-        public async Task<bool> UsernameExistsAsync(string username)
+        public async Task<bool> UsernameOrEmailExistsAsync(string username, string email)
         {
             try
             {
-                return await _context.Users.AnyAsync(u => u.Username == username);
+                return await _context.Users.AnyAsync(u => u.Username == username || u.Email == email);
             }
             catch(Exception ex)
             {
-                throw new Exception($"Error checking existence of username {username}", ex);
+                throw new Exception($"Error checking existence of {username} or {email}", ex);
             }
         }
 
