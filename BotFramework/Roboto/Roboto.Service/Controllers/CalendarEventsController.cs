@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Roboto.Models;
 using Roboto.Repository;
-using Roboto.Service.Dto;
+using Roboto.Models.Dto;
 
 namespace Roboto.Service.Controllers
 {
     [Authorize]
-    [Route("api/CalendarEvents")]
+    [ApiController]
+    [Route("api/[controller]")]
     public class CalendarEventsController : Controller
     {
         private readonly ICalendarEventRepository _repository;

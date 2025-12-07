@@ -1,7 +1,7 @@
 namespace Roboto.Service.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Roboto.Service.Dto;
+    using Roboto.Models.Dto;
     using Roboto.Repository;
     using Roboto.Models;
     using Roboto.Service.Auth;

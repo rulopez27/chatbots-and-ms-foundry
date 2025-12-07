@@ -1,23 +1,22 @@
 using System;
+using System.ComponentModel;
 
 namespace Roboto.Models
 {
     public class User
     {
         public int Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
-        public string Salt { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
+        public string Salt { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public virtual ICollection<CalendarEvent> CalendarEvents { get; set; }
 
         public User()
         {
-            Username = string.Empty;
-            Email = string.Empty;
-            PasswordHash = string.Empty;
-            Salt = string.Empty;
             CreatedAt = DateTime.MinValue;
             CalendarEvents = new List<CalendarEvent>();
         }

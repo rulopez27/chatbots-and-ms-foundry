@@ -1,6 +1,4 @@
-using Roboto.Models;
-
-namespace Roboto.Service.Dto
+namespace Roboto.Models.Dto
 {
     public static class CalendarEventConverter
 {
