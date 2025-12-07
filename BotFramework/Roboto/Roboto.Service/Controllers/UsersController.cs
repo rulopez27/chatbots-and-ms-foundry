@@ -6,6 +6,7 @@ namespace Roboto.Service.Controllers
     using Roboto.Models;
     using Roboto.Service.Auth;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
 
     [ApiController]
     public class UsersController : ControllerBase
@@ -21,6 +22,7 @@ namespace Roboto.Service.Controllers
             _jwtService = jwtService;
         }
 
+        [AllowAnonymous]
         [HttpPost("api/auth/register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
@@ -38,6 +40,8 @@ namespace Roboto.Service.Controllers
                 Username = dto.Username,
                 Email = dto.Email,
                 PasswordHash = hash,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
                 Salt = salt,
                 CreatedAt = DateTime.UtcNow
             };
@@ -47,6 +51,7 @@ namespace Roboto.Service.Controllers
             return Created($"/api/users/{user.Id}", new { user.Id, user.Username, user.Email });
         }
 
+        [AllowAnonymous]
         [HttpPost("api/auth/login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {

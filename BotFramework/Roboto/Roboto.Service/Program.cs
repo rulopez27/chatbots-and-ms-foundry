@@ -5,6 +5,7 @@ using System.Text;
 using Roboto.Repository;
 using Roboto.Service.Auth;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,7 @@ builder.Services.AddDbContext<RobotoCalendarSchedulerDbContext>(options =>
     options.UseMySQL(configuration.GetConnectionString("MySql")?? throw new InvalidOperationException("Connection string 'MySql' not found.")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 
 // Services
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
@@ -67,7 +69,7 @@ builder.Services
     })
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = !string.IsNullOrEmpty(issuer),
             ValidIssuer = issuer,
@@ -78,8 +80,12 @@ builder.Services
             ValidateLifetime = true
         };
     });
+var requireAuthPolicy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+.SetFallbackPolicy(requireAuthPolicy);
 
 var app = builder.Build();
 
