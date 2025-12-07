@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Roboto.Models
+﻿namespace Roboto.Models
 {
     public class CalendarEvent
     {
