@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  roboto-mysql:
+    build:
+      context: ./docker-images/roboto-mysql
+      dockerfile: Dockerfile
+    container_name: roboto-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: RobotoCalendarScheduler
+      MYSQL_USER: roboto
+      MYSQL_PASSWORD: change_this_password
+    ports:
+      - "3306:3306"
+    networks:
+      - roboto-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "roboto", "-pchange_this_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  roboto-api:
+    build:
+      context: .
+      dockerfile: docker-images/roboto-rest-api/Dockerfile
+    container_name: roboto-api
+    environment:
+      # Database connection - uses service name 'roboto-mysql' as host
+      ConnectionStrings__MySql: "server=roboto-mysql;database=RobotoCalendarScheduler;user=roboto;pwd=change_this_password;"
+      # JWT Configuration
+      Jwt__Key: "8KJM8[X`b&I{Axrebo~UuBlM'5+:g:W`uUyiM@s_FwF%}"
+      Jwt__Issuer: "RobotoAuth"
+      Jwt__Audience: "RobotoClients"
+      Jwt__ExpireMinutes: "60"
+      # ASP.NET Core
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:8080"
+    ports:
+      - "8080:8080"
+    networks:
+      - roboto-network
+    depends_on:
+      roboto-mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  roboto-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
