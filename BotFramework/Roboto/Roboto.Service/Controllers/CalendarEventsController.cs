@@ -123,5 +123,28 @@ namespace Roboto.Service.Controllers
                 return StatusCode(500, errorMessage);
             }
         }
+
+        [HttpGet("/api/Users/{userId}/CalendarEvents/")]
+        public async Task<IActionResult> GetEventsForUser(int userId)
+        {
+            try
+            {
+                var events = await _repository.GetEventsByUserIdAsync(userId);
+                var eventDtos = events.Select(ev => 
+                {
+                    var dto = new CalendarEventDto();
+                    _mapper.Map(ev, dto);
+                    dto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
+                    return dto;
+                }).ToList();
+
+                return Ok(eventDtos);
+            }
+            catch(Exception ex)
+            {
+                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
+                return StatusCode(500, errorMessage);
+            }
+        }
     }
 }

@@ -11,5 +11,7 @@ namespace Roboto.Repository
         Task<List<CalendarEvent>> GetEventsByDateAsync(int userId, DateTime date);
         Task UpdateEventAsync(CalendarEvent calendarEvent);
         Task DeleteEventAsync(int id);
+        Task<List<CalendarEvent>> GetEventsInDateRangeAsync(int userId, DateTime startDate, DateTime endDate);
+        Task<List<CalendarEvent>> GetEventsByUserIdAsync(int userId);
     }
 }

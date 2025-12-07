@@ -117,6 +117,34 @@ namespace Roboto.Repository
             }
         }
 
+        public async Task<List<CalendarEvent>> GetEventsInDateRangeAsync(int userId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                return await _context.CalendarEvents
+                    .Where(e => e.UserId == userId && e.StartDateTime >= startDate && e.EndDateTime <= endDate)
+                    .ToListAsync();
+            }
+            catch(Exception ex )
+            {
+                throw new Exception("Error retrieving events in date range", ex);
+            }
+        }
+
+        public Task<List<CalendarEvent>> GetEventsByUserIdAsync(int userId)
+        {
+            try
+            {
+                return _context.CalendarEvents
+                    .Where(e => e.UserId == userId)
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error retrieving events for user with ID {userId}", ex);
+            }
+        }
+
         public void Dispose()
         {
             _context?.Dispose();
