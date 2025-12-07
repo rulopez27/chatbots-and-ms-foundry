@@ -62,5 +62,19 @@ namespace Roboto.Repository
                 throw new Exception($"Error retrieving user with id {id}", ex);
             }
         }
+
+        public Task<User?> GetUserByIdWithEventsAsync(int id)
+        {
+            try
+            {
+                return _context.Users
+                    .Include(u => u.CalendarEvents)
+                    .FirstOrDefaultAsync(u => u.Id == id);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error retrieving user with id {id} including events", ex);
+            }
+        }
     }
 }

@@ -8,5 +8,6 @@ namespace Roboto.Repository
         Task AddUserAsync(User user);
         Task<User?> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
         Task<User?> GetUserByIdAsync(int id);
+        Task<User?> GetUserByIdWithEventsAsync(int id);
     }
 }
