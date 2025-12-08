@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS CalendarEvents (
     Title VARCHAR(100) NOT NULL,
     StartDateTime DATETIME NOT NULL,
     Duration DOUBLE NOT NULL,
+    EndDateTime DATETIME NOT NULL,
     IsAllDay BOOLEAN NOT NULL,
     BlockCalendar BOOLEAN NOT NULL,
     Details TEXT,

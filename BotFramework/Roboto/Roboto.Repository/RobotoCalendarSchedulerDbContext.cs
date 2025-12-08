@@ -35,7 +35,7 @@ public class RobotoCalendarSchedulerDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
             entity.Property(e => e.StartDateTime).IsRequired();
-            entity.Ignore(e => e.EndDateTime);
+            entity.Property(e => e.EndDateTime).IsRequired();
             entity.Property(e => e.Duration).IsRequired();
             entity.Property(e => e.IsAllDay).IsRequired();
             entity.Property(e => e.BlockCalendar).IsRequired();

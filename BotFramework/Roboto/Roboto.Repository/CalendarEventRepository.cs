@@ -28,6 +28,7 @@ namespace Roboto.Repository
         {
             try
             {
+                calendarEvent.CalculateEndDateTime();
                 await _context.CalendarEvents.AddAsync(calendarEvent);
                 await _context.SaveChangesAsync();
             }
@@ -73,6 +74,7 @@ namespace Roboto.Repository
         {
             try
             {
+                calendarEvent.CalculateEndDateTime();
                 _context.CalendarEvents.Update(calendarEvent);
                 return _context.SaveChangesAsync();
             }

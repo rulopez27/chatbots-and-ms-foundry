@@ -146,5 +146,51 @@ namespace Roboto.Service.Controllers
                 return StatusCode(500, errorMessage);
             }
         }
-    }
+
+        [HttpPost("/api/Users/{userId}/CalendarEvents/Range")]
+        public async Task<IActionResult> GetEventsInDateRangeForUser(int userId, [FromBody] CalendarEventsRangeDto dateRange)
+        {
+            try
+            {
+                var events = await _repository.GetEventsInDateRangeAsync(userId, dateRange.StartDate, dateRange.EndDate);
+                var eventDtos = events.Select(ev => 
+                {
+                    var dto = new CalendarEventDto();
+                    _mapper.Map(ev, dto);
+                    dto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
+                    return dto;
+                }).ToList();
+
+                return Ok(eventDtos);
+            }
+            catch(Exception ex)
+            {
+                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
+                return StatusCode(500, errorMessage);
+            }
+        }
+
+        [HttpPost("/api/Users/{userId}/CalendarEvents/Conflicts")]
+        public async Task<IActionResult> GetCalendarConflicts(int userId, [FromBody] CalendarEventsRangeDto dateRange)
+        {
+            try
+            {
+                var conflicts = await _repository.GetCalendarConflictsAsync(userId, dateRange.StartDate, dateRange.EndDate);
+                var conflictDtos = conflicts.Select(ev => 
+                {
+                    var dto = new CalendarEventDto();
+                    _mapper.Map(ev, dto);
+                    dto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
+                    return dto;
+                }).ToList();
+
+                return Ok(conflictDtos);
+            }
+            catch(Exception ex)
+            {
+                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
+                return StatusCode(500, errorMessage);
+            }
+        }     
+    }  
 }
