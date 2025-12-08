@@ -12,20 +12,6 @@ namespace Roboto.Repository
             _context = context;
         }
 
-        public async Task<List<CalendarEvent>> GetAllEventsAsync(int userId)
-        {
-            try
-            {
-                return await _context.CalendarEvents
-                .Where(calendarEvent => calendarEvent.UserId == userId)
-                .ToListAsync();
-            }
-            catch(Exception ex)
-            {
-                throw new Exception("Error retrieving all calendar events", ex);
-            }
-        }
-
         public async Task<CalendarEvent> GetEventByIdAsync(int id)
         {
             try

@@ -4,7 +4,6 @@ namespace Roboto.Repository
 {
     public interface ICalendarEventRepository
     {
-        Task<List<CalendarEvent>> GetAllEventsAsync(int userId);
         Task<CalendarEvent> GetEventByIdAsync(int id);
         Task AddEventAsync(CalendarEvent calendarEvent);
         Task<List<CalendarEvent>> GetCalendarConflictsAsync(int userId,DateTime startDateTime, DateTime endDateTime);
