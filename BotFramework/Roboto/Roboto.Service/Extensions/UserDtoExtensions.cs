@@ -1,6 +1,6 @@
-using Roboto.Models.Dto;
+using Roboto.Dtos;
 
-namespace Roboto.Service.Services
+namespace Roboto.Service.Extensions
 {
     public static class UserDtoExtensions
     {

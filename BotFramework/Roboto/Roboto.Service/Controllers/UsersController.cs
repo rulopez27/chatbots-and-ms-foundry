@@ -1,12 +1,12 @@
 namespace Roboto.Service.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Roboto.Models.Dto;
+    using Roboto.Dtos;
     using Roboto.Repository;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using AutoMapper;
-    using Roboto.Service.Services;
+    using Roboto.Service.Extensions;
 
     [ApiController]
     [Authorize]

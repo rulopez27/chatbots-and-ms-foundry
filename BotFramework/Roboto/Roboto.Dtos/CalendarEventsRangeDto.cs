@@ -1,4 +1,4 @@
-namespace Roboto.Models
+namespace Roboto.Dtos
 {
     public class CalendarEventsRangeDto
     {

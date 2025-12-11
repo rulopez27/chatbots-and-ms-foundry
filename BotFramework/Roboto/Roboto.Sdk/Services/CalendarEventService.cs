@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using Roboto.Sdk.Exceptions;
-using Roboto.Models;
-using Roboto.Models.Dto;
+using Roboto.Dtos;
 
 namespace Roboto.Sdk.Services
 {

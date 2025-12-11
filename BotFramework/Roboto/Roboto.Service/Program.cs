@@ -7,8 +7,8 @@ using Roboto.Service.Auth;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Roboto.Models;
-using Roboto.Models.Dto;
-using Roboto.Service.Services;
+using Roboto.Dtos;
+using Roboto.Service.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

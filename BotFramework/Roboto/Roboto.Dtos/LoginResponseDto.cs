@@ -1,4 +1,4 @@
-namespace Roboto.Models.Dto
+namespace Roboto.Dtos
 {
     public class LoginResponseDto
     {

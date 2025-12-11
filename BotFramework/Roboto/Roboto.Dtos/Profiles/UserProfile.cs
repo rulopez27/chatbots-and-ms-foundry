@@ -1,7 +1,7 @@
 using AutoMapper;
-using Roboto.Models.Dto;
+using Roboto.Models;
 
-namespace Roboto.Models.Profiles
+namespace Roboto.Dtos.Profiles
 {
     public class UserProfile : Profile
     {

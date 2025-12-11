@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using NUnit.Framework;
 using Roboto.Models;
-using Roboto.Models.Dto;
+using Roboto.Dtos;
 using Roboto.Repository;
 using Roboto.Service.Auth;
 using Roboto.Service.Controllers;
-using Roboto.Service.Services;
+using Roboto.Service.Extensions;
 
 namespace Roboto.Service.Tests.Controllers
 {

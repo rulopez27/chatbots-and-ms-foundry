@@ -1,5 +1,4 @@
-using Roboto.Models;
-using Roboto.Models.Dto;
+using Roboto.Dtos;
 
 namespace Roboto.Sdk.Services;
 

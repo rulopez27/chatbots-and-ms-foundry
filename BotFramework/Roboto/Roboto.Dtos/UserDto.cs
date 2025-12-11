@@ -1,4 +1,4 @@
-namespace Roboto.Models.Dto
+namespace Roboto.Dtos
 {
     public class UserDto : DtoBase
     {
@@ -9,7 +9,7 @@ namespace Roboto.Models.Dto
         public string LastName { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
-        public List<CalendarEvent> CalendarEvents { get; set; } = new List<CalendarEvent>();
+        public List<CalendarEventDto> CalendarEvents { get; set; } = new List<CalendarEventDto>();
 
     }
 }

@@ -1,12 +1,11 @@
  using Microsoft.AspNetCore.Mvc;
- using Roboto.Models.Dto;
+ using Roboto.Dtos;
  using Roboto.Repository;
  using Roboto.Models;
  using Roboto.Service.Auth;
- using System.Threading.Tasks;
  using Microsoft.AspNetCore.Authorization;
  using AutoMapper;
- using Roboto.Service.Services;
+ using Roboto.Service.Extensions;
 
 namespace Roboto.Service.Controllers
 {
