@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Roboto.Models;
-using Roboto.Repository;
 using Roboto.Dtos;
-using AutoMapper;
-using Roboto.Service.Extensions;
+using Roboto.Service.Services;
 
 namespace Roboto.Service.Controllers
 {
@@ -13,23 +10,11 @@ namespace Roboto.Service.Controllers
     [Route("api/[controller]")]
     public class CalendarEventsController : Controller
     {
-        private readonly ICalendarEventRepository _repository;
-        private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ILinkService _linkService;
-        private readonly LinkGenerator _linkGenerator;
+        private readonly ICalendarEventService _calendarEventService;
 
-        public CalendarEventsController(ICalendarEventRepository repository, 
-            IMapper mapper, 
-            IHttpContextAccessor httpContextAccessor, 
-            ILinkService linkService,
-            LinkGenerator linkGenerator)
+        public CalendarEventsController(ICalendarEventService calendarEventService)
         {
-            _repository = repository;
-            _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
-            _linkService = linkService;
-            _linkGenerator = linkGenerator;
+            _calendarEventService = calendarEventService;
         }
 
         [HttpPost]
@@ -37,12 +22,8 @@ namespace Roboto.Service.Controllers
         {
             try
             {
-                CalendarEvent calendarEvent = new CalendarEvent();
-                _mapper.Map(dto, calendarEvent);
-                await _repository.AddEventAsync(calendarEvent);
-                CalendarEventDto returnDto = _mapper.Map<CalendarEventDto>(calendarEvent);
-                returnDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
-                return Created(nameof(CalendarEvent),returnDto);
+                var eventDto = await _calendarEventService.CreateEventAsync(dto);
+                return Created($"/api/calendarevents/{eventDto.Id}", eventDto);
             }
             catch(Exception ex)
             {
@@ -51,21 +32,18 @@ namespace Roboto.Service.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                CalendarEvent calendarEvent = await _repository.GetEventByIdAsync(id);
-                if(calendarEvent == null)
+                var eventDto = await _calendarEventService.GetEventByIdAsync(id);
+                if (eventDto == null)
                 {
                     return NotFound();
                 }
 
-                CalendarEventDto calendarEventDto = new CalendarEventDto();
-                _mapper.Map(calendarEvent, calendarEventDto);
-                calendarEventDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
-                return Ok(calendarEventDto);   
+                return Ok(eventDto);
             }
             catch(Exception ex)
             {
@@ -75,22 +53,23 @@ namespace Roboto.Service.Controllers
             
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] CalendarEventDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CalendarEventDto dto)
         {
             try
             {
-                CalendarEvent existingEvent = await _repository.GetEventByIdAsync(dto.Id);
-                if(existingEvent == null)
+                if (id != dto.Id)
+                {
+                    return BadRequest("Route ID and DTO ID must match");
+                }
+
+                var updatedEvent = await _calendarEventService.UpdateEventAsync(dto);
+                if (updatedEvent == null)
                 {
                     return NotFound();
                 }
 
-                _mapper.Map(dto, existingEvent);
-                await _repository.UpdateEventAsync(existingEvent);
-                CalendarEventDto returnDto = _mapper.Map<CalendarEventDto>(existingEvent);
-                returnDto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
-                return Ok(returnDto);
+                return Ok(updatedEvent);
             }
             catch(Exception ex)
             {
@@ -99,88 +78,18 @@ namespace Roboto.Service.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                CalendarEvent existingEvent = await _repository.GetEventByIdAsync(id);
-                if(existingEvent == null)
+                var success = await _calendarEventService.DeleteEventAsync(id);
+                if (!success)
                 {
                     return NotFound();
                 }
 
-                await _repository.DeleteEventAsync(id);
                 return NoContent();
-            }
-            catch(Exception ex)
-            {
-                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
-                return StatusCode(500, errorMessage);
-            }
-        }
-
-        [HttpGet("/api/Users/{userId}/CalendarEvents/")]
-        public async Task<IActionResult> GetEventsForUser(int userId)
-        {
-            try
-            {
-                var events = await _repository.GetEventsByUserIdAsync(userId);
-                var eventDtos = events.Select(ev => 
-                {
-                    var dto = new CalendarEventDto();
-                    _mapper.Map(ev, dto);
-                    dto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
-                    return dto;
-                }).ToList();
-
-                return Ok(eventDtos);
-            }
-            catch(Exception ex)
-            {
-                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
-                return StatusCode(500, errorMessage);
-            }
-        }
-
-        [HttpPost("/api/Users/{userId}/CalendarEvents/Range")]
-        public async Task<IActionResult> GetEventsInDateRangeForUser(int userId, [FromBody] CalendarEventsRangeDto dateRange)
-        {
-            try
-            {
-                var events = await _repository.GetEventsInDateRangeAsync(userId, dateRange.StartDate, dateRange.EndDate);
-                var eventDtos = events.Select(ev => 
-                {
-                    var dto = new CalendarEventDto();
-                    _mapper.Map(ev, dto);
-                    dto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
-                    return dto;
-                }).ToList();
-
-                return Ok(eventDtos);
-            }
-            catch(Exception ex)
-            {
-                string errorMessage = ex.InnerException == null ? ex.Message : ex.InnerException.Message;
-                return StatusCode(500, errorMessage);
-            }
-        }
-
-        [HttpPost("/api/Users/{userId}/CalendarEvents/Conflicts")]
-        public async Task<IActionResult> GetCalendarConflicts(int userId, [FromBody] CalendarEventsRangeDto dateRange)
-        {
-            try
-            {
-                var conflicts = await _repository.GetCalendarConflictsAsync(userId, dateRange.StartDate, dateRange.EndDate);
-                var conflictDtos = conflicts.Select(ev => 
-                {
-                    var dto = new CalendarEventDto();
-                    _mapper.Map(ev, dto);
-                    dto.CreateLinks(_linkService, _linkGenerator, _httpContextAccessor);
-                    return dto;
-                }).ToList();
-
-                return Ok(conflictDtos);
             }
             catch(Exception ex)
             {

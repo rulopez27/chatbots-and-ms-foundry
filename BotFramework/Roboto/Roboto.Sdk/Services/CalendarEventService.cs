@@ -31,7 +31,7 @@ namespace Roboto.Sdk.Services
 
         public async Task<CalendarEventDto> GetEventByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/calendarevents?id={id}", cancellationToken);
+            var response = await _httpClient.GetAsync($"api/calendarevents/{id}", cancellationToken);
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -52,7 +52,7 @@ namespace Roboto.Sdk.Services
 
         public async Task<CalendarEventDto> UpdateEventAsync(CalendarEventDto dto, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PutAsJsonAsync("api/calendarevents", dto, cancellationToken);
+            var response = await _httpClient.PutAsJsonAsync($"api/calendarevents/{dto.Id}", dto, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -68,7 +68,7 @@ namespace Roboto.Sdk.Services
 
         public async Task DeleteEventAsync(int id, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeleteAsync($"api/calendarevents?id={id}", cancellationToken);
+            var response = await _httpClient.DeleteAsync($"api/calendarevents/{id}", cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -82,7 +82,7 @@ namespace Roboto.Sdk.Services
 
         public async Task<IEnumerable<CalendarEventDto>> GetEventsForUserAsync(int userId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/users/{userId}/calendarevents", cancellationToken);
+            var response = await _httpClient.GetAsync($"api/users/{userId}/calendar-events", cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -98,7 +98,9 @@ namespace Roboto.Sdk.Services
 
         public async Task<IEnumerable<CalendarEventDto>> GetEventsInDateRangeAsync(int userId, CalendarEventsRangeDto dateRange, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PostAsJsonAsync($"api/users/{userId}/calendarevents/range", dateRange, cancellationToken);
+            var startDate = dateRange.StartDate.ToString("yyyy-MM-dd");
+            var endDate = dateRange.EndDate.ToString("yyyy-MM-dd");
+            var response = await _httpClient.GetAsync($"api/users/{userId}/calendar-events/range?startDate={startDate}&endDate={endDate}", cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -114,7 +116,9 @@ namespace Roboto.Sdk.Services
 
         public async Task<IEnumerable<CalendarEventDto>> GetCalendarConflictsAsync(int userId, CalendarEventsRangeDto dateRange, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PostAsJsonAsync($"api/users/{userId}/calendarevents/conflicts", dateRange, cancellationToken);
+            var startDate = dateRange.StartDate.ToString("yyyy-MM-dd");
+            var endDate = dateRange.EndDate.ToString("yyyy-MM-dd");
+            var response = await _httpClient.GetAsync($"api/users/{userId}/calendar-events/conflicts?startDate={startDate}&endDate={endDate}", cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {

@@ -11,6 +11,7 @@ using Roboto.Dtos;
 using Roboto.Service.Extensions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Roboto.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,8 @@ builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ILinkService, LinkService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(config =>
 {
