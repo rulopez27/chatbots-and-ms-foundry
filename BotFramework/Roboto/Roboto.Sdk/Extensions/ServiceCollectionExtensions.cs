@@ -32,6 +32,9 @@ namespace Roboto.Sdk.Extensions
                     $"Add a '{RobotoApiOptions.SectionName}' section to your appsettings.json");
             }
 
+            // Register token storage as scoped to share across all services in a request
+            services.AddScoped<ITokenStorage, TokenStorage>();
+
             // Register HttpClient for each service
             services.AddHttpClient<IAuthenticationService, AuthenticationService>(client =>
             {
@@ -39,17 +42,22 @@ namespace Roboto.Sdk.Extensions
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
             });
 
+            // Register the authentication handler
+            services.AddTransient<AuthenticationHandler>();
+
             services.AddHttpClient<IUserService, UserService>(client =>
             {
                 client.BaseAddress = new Uri(options.BaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-            });
+            })
+            .AddHttpMessageHandler<AuthenticationHandler>();
 
             services.AddHttpClient<ICalendarEventService, CalendarEventService>(client =>
             {
                 client.BaseAddress = new Uri(options.BaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-            });
+            })
+            .AddHttpMessageHandler<AuthenticationHandler>();
 
             // Register the main client
             services.AddScoped<RobotoApiClient>();
@@ -81,6 +89,9 @@ namespace Roboto.Sdk.Extensions
                 throw new ArgumentException("BaseUrl is required", nameof(options));
             }
 
+            // Register token storage as scoped to share across all services in a request
+            services.AddScoped<ITokenStorage, TokenStorage>();
+
             // Register HttpClient for each service
             services.AddHttpClient<IAuthenticationService, AuthenticationService>(client =>
             {
@@ -88,17 +99,22 @@ namespace Roboto.Sdk.Extensions
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
             });
 
+            // Register the authentication handler
+            services.AddTransient<AuthenticationHandler>();
+
             services.AddHttpClient<IUserService, UserService>(client =>
             {
                 client.BaseAddress = new Uri(options.BaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-            });
+            })
+            .AddHttpMessageHandler<AuthenticationHandler>();
 
             services.AddHttpClient<ICalendarEventService, CalendarEventService>(client =>
             {
                 client.BaseAddress = new Uri(options.BaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-            });
+            })
+            .AddHttpMessageHandler<AuthenticationHandler>();
 
             // Register the main client
             services.AddScoped<RobotoApiClient>();

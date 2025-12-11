@@ -1,4 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using Roboto.Sdk.Configuration;
 using Roboto.Sdk.Exceptions;
 using Roboto.Dtos;
@@ -8,11 +10,12 @@ namespace Roboto.Sdk.Services
     internal class AuthenticationService : IAuthenticationService
     {
         private readonly HttpClient _httpClient;
-        private string? _token;
+        private readonly ITokenStorage _tokenStorage;
 
-        public AuthenticationService(HttpClient httpClient)
+        public AuthenticationService(HttpClient httpClient, ITokenStorage tokenStorage)
         {
             _httpClient = httpClient;
+            _tokenStorage = tokenStorage;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginDto request, CancellationToken cancellationToken = default)
@@ -47,21 +50,81 @@ namespace Roboto.Sdk.Services
             return (await response.Content.ReadFromJsonAsync<RegisterResponseDto>(cancellationToken))!;
         }
 
-        public string? GetToken() => _token;
+        public string? GetToken() => _tokenStorage.Token;
 
         public void SetToken(string token)
         {
-            _token = token;
-            _httpClient.DefaultRequestHeaders.Authorization = 
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            _tokenStorage.Token = token;
+            // Token will be added to requests by AuthenticationHandler
         }
 
         public void ClearToken()
         {
-            _token = null;
-            _httpClient.DefaultRequestHeaders.Authorization = null;
+            _tokenStorage.Token = null;
         }
 
-        public bool IsAuthenticated() => !string.IsNullOrEmpty(_token);
+        public bool IsAuthenticated() => !string.IsNullOrEmpty(_tokenStorage.Token);
+
+        public int? AuthenticatedUserId
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_tokenStorage.Token))
+                    return null;
+
+                try
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(_tokenStorage.Token);
+                    
+                    // Try to get the user ID from the NameIdentifier claim
+                    var userIdClaim = jwtToken.Claims.FirstOrDefault(c => 
+                        c.Type == ClaimTypes.NameIdentifier || 
+                        c.Type == "nameid" || 
+                        c.Type == "sub" ||
+                        c.Type == "userId");
+
+                    if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+                    {
+                        return userId;
+                    }
+                }
+                catch
+                {
+                    // If token parsing fails, return null
+                }
+
+                return null;
+            }
+        }
+
+        public string? AuthenticatedUsername
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_tokenStorage.Token))
+                    return null;
+
+                try
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(_tokenStorage.Token);
+                    
+                    // Try to get the username from the UniqueName claim
+                    var usernameClaim = jwtToken.Claims.FirstOrDefault(c => 
+                        c.Type == ClaimTypes.Name || 
+                        c.Type == "unique_name" || 
+                        c.Type == JwtRegisteredClaimNames.UniqueName);
+
+                    return usernameClaim?.Value;
+                }
+                catch
+                {
+                    // If token parsing fails, return null
+                }
+
+                return null;
+            }
+        }
     }
 }

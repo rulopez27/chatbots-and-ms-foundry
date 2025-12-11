@@ -34,4 +34,14 @@ public interface IAuthenticationService
         /// Check if currently authenticated
     /// </summary>
     bool IsAuthenticated();
+
+    /// <summary>
+    /// Get the authenticated user's ID from the JWT token
+    /// </summary>
+    int? AuthenticatedUserId { get; }
+
+    /// <summary>
+    /// Get the authenticated user's username from the JWT token
+    /// </summary>
+    string? AuthenticatedUsername { get; }
 }
