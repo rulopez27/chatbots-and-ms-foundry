@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Service.Tests", "Rob
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Sdk", "Roboto.Sdk\Roboto.Sdk.csproj", "{603A82E8-E320-43C8-BE56-9E1914D6EECE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roboto.Dtos", "Roboto.Dtos\Roboto.Dtos.csproj", "{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,18 @@ Global
 		{603A82E8-E320-43C8-BE56-9E1914D6EECE}.Release|x64.Build.0 = Release|Any CPU
 		{603A82E8-E320-43C8-BE56-9E1914D6EECE}.Release|x86.ActiveCfg = Release|Any CPU
 		{603A82E8-E320-43C8-BE56-9E1914D6EECE}.Release|x86.Build.0 = Release|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Debug|x64.Build.0 = Debug|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Debug|x86.Build.0 = Debug|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Release|x64.ActiveCfg = Release|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Release|x64.Build.0 = Release|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Release|x86.ActiveCfg = Release|Any CPU
+		{5EDE5D43-2F1B-48CC-ACD7-E0EA44CB822E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
