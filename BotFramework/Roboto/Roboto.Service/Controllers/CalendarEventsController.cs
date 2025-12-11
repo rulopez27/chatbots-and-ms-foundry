@@ -37,10 +37,6 @@ namespace Roboto.Service.Controllers
         {
             try
             {
-                if(string.IsNullOrEmpty(dto.Title) || dto.Duration == 0)
-                {
-                    return BadRequest("Event title, start date and time or duration are invalid.");
-                }
                 CalendarEvent calendarEvent = new CalendarEvent();
                 _mapper.Map(dto, calendarEvent);
                 await _repository.AddEventAsync(calendarEvent);

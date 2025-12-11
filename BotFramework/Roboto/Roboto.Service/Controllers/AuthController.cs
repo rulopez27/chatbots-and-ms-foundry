@@ -42,10 +42,6 @@ namespace Roboto.Service.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-                // basic validation
-            if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password) || string.IsNullOrWhiteSpace(dto.Email))
-                return BadRequest("username, email and password are required");
-
             var exists = await _userRepository.UsernameOrEmailExistsAsync(dto.Username, dto.Email);
             if (exists) return Conflict("username or email already in use");
 
