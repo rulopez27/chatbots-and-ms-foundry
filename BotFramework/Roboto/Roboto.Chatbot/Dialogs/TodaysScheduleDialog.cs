@@ -3,18 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
-using Roboto.Repository;
+using Roboto.Dtos;
+using Roboto.Sdk;
+using System.Linq;
 
 namespace Roboto.Chatbot.Dialogs
 {
    public class TodaysScheduleDialog : ComponentDialog
     {
         ILogger<TodaysScheduleDialog> _logger;
-        IRobotoRepository _repository;
-        public TodaysScheduleDialog(ILogger<TodaysScheduleDialog> logger, IRobotoRepository repository) : base (nameof(TodaysScheduleDialog))
+        RobotoApiClient _robotoApiClient;
+        public TodaysScheduleDialog(ILogger<TodaysScheduleDialog> logger, RobotoApiClient robotoApiClient) : base (nameof(TodaysScheduleDialog))
         {
             _logger = logger;
-            _repository = repository;
+            _robotoApiClient = robotoApiClient;
             WaterfallStep[] waterfallSteps = new WaterfallStep[]
             {
                 ShowScheduleAsync
@@ -26,8 +28,13 @@ namespace Roboto.Chatbot.Dialogs
         private async Task<DialogTurnResult> ShowScheduleAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             _logger.LogInformation("ShowScheduleAsync task fired on ScheduleDialog");
-            var events = await _repository.GetEventsByDateAsync(DateTime.Now);
-            if(events.Count == 0)
+            CalendarEventsRangeDto dateRange = new CalendarEventsRangeDto
+            {
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddDays(1)
+            };
+            var events = await _robotoApiClient.CalendarEvents.GetEventsInDateRangeAsync(1, dateRange, cancellationToken);
+            if(!events.Any()) 
             {
                 await stepContext.Context.SendActivityAsync("You have no events scheduled for today.", cancellationToken: cancellationToken);
             }

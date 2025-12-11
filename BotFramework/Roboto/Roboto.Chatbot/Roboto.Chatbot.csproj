@@ -18,13 +18,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.23.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.23.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Roboto.Repository/Roboto.Repository.csproj" />
-    <ProjectReference Include="..\Roboto.Models\Roboto.Models.csproj" />
+    <ProjectReference Include="../Roboto.Sdk/Roboto.Sdk.csproj" />
+    <ProjectReference Include="../Roboto.Dtos/Roboto.Dtos.csproj" />
   </ItemGroup>
 
     <ItemGroup>

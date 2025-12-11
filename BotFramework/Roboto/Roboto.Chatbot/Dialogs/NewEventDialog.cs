@@ -7,23 +7,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using Roboto.Models;
 using System;
-using Roboto.Repository;
+using Roboto.Sdk.Services;
 using Newtonsoft.Json.Linq;
+using Roboto.Sdk;
+using Roboto.Dtos;
 
 namespace Roboto.Chatbot.Dialogs
 {
     public class NewEventDialog : ComponentDialog
     {
         ILogger<MainDialog> _logger;
-        IRobotoRepository _repository;
+        RobotoApiClient _robotoApiClient;
         
         public string EventStartDate { get; set; }
         public string EventStartTime { get; set; }
 
-        public NewEventDialog(ILogger<MainDialog> logger, IRobotoRepository repository) : base(nameof(NewEventDialog))
+        public NewEventDialog(ILogger<MainDialog> logger, RobotoApiClient robotoApiClient) : base(nameof(NewEventDialog))
         {
             _logger = logger;
-            _repository = repository;
+            _robotoApiClient = robotoApiClient;
             WaterfallStep[] waterfallSteps = new WaterfallStep[]
             {
                 ShowNewEventCard,
@@ -64,11 +66,20 @@ namespace Roboto.Chatbot.Dialogs
                     bool blockCalendar = payload.Value<bool?>("blocksCalendar") ?? false;
 
                     //Create a CalendarEvent object (assuming such a class exists)
-                    CalendarEvent newEvent = new CalendarEvent(title, DateTime.Parse(date), time, duration, isAllDay, blockCalendar, details);
+                    CalendarEventCreateDto newEvent = new CalendarEventCreateDto
+                    {
+                        UserId = 1, // In a real scenario, get the user ID from the context or authentication
+                        Title = title,
+                        StartDateTime = DateTime.Parse($"{date}T{time}"),
+                        Duration = duration,
+                        IsAllDay = isAllDay,
+                        BlockCalendar = blockCalendar,
+                        Details = details
+                    };
                     try
                     {
                         // Persist using repository (repository handles DbContext and SaveChanges)
-                        await _repository.AddEventAsync(newEvent);
+                        await _robotoApiClient.CalendarEvents.CreateEventAsync(newEvent);
                         await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Event saved: {newEvent.Title} at {newEvent.StartDateTime}"), cancellationToken);
                     }
                     catch(Exception ex)

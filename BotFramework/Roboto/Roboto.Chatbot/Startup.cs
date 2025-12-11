@@ -9,9 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Roboto.Chatbot.Dialogs;
-using Roboto.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
+using Roboto.Sdk.Extensions;
 
 namespace Roboto.Chatbot
 {
@@ -32,6 +30,14 @@ namespace Roboto.Chatbot
                 options.SerializerSettings.MaxDepth = HttpHelper.BotMessageSerializerSettings.MaxDepth;
             });
 
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    config.AddEnvironmentVariables();
+                })
+                .Build();
+
             // Create the Bot Framework Authentication to be used with the Bot Adapter.
             services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
@@ -47,11 +53,8 @@ namespace Roboto.Chatbot
             // Create the Conversation state used by the bot
             services.AddSingleton<ConversationState>();
 
-            //Register DbContext
-            services.AddDbContext<RobotoDbContext>(options => options.UseSqlite("Data Source=roboto.db"));
-            
-            //Register repository implementation
-            services.AddScoped<IRobotoRepository, RobotoRepository>();
+            // Register Roboto SDK services with configuration
+            services.AddRobotoApiClient(Configuration);
             
             //Register dialogs
             services.AddTransient<MainDialog>();
@@ -80,12 +83,6 @@ namespace Roboto.Chatbot
                     endpoints.MapControllers();
                 });
             // app.UseHttpsRedirection();
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<RobotoDbContext>();
-                db.Database.EnsureCreated();
-            }
         }
     }
 }
